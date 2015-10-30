@@ -11,7 +11,7 @@ describe 'ruby::version' do
 
         should contain_ruby('2.2.0').with({
           :ensure     => "installed",
-          :ruby_build => "/test/boxen/ruby-build/bin/ruby-build",
+          :ruby_build => "/bin/ruby-build",
           :provider   => 'rubybuild',
           :user       => 'testuser',
         })
