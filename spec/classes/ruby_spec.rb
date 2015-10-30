@@ -13,7 +13,6 @@ describe "ruby" do
   let(:params) { default_params }
 
   it { should contain_class("ruby::build") }
-  it { should contain_file("/opt/rubies") }
 
   context "provider is rbenv" do
     let(:params) {
@@ -38,13 +37,6 @@ describe "ruby" do
 
     it { should contain_class("boxen::config") }
     it { should contain_boxen__env_script("ruby") }
-
-    it do
-      should contain_file("/opt/rubies").with({
-        :ensure => "directory",
-        :owner  => "testuser",
-      })
-    end
   end
 
   context "osfamily is not Darwin" do
@@ -54,12 +46,5 @@ describe "ruby" do
 
     it { should_not contain_class("boxen::config") }
     it { should_not contain_boxen__env_script("ruby") }
-
-    it do
-      should contain_file("/opt/rubies").with({
-        :ensure => "directory",
-        :owner  => "root",
-      })
-    end
   end
 end
