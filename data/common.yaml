@@ -28,7 +28,7 @@ ruby::prefix: '/opt'
 ruby::provider: 'rbenv'
 ruby::user: "%{::id}"
 
-ruby::build::ensure: 'v20151024'
+ruby::build::ensure: 'v20160330'
 ruby::build::prefix: "%{::homebrew_root}"
 ruby::build::user: "%{hiera('ruby::user')}"
 
