@@ -50,7 +50,6 @@ Puppet::Type.type(:ruby).provide(:rubybuild) do
 private
   def build_ruby
     execute "rbenv install #{version}", command_options.merge(:failonfail => true)
-    execute "rbenv install #{version}", command_options.merge(:failonfail => true)
   end
 
   def ruby_build
