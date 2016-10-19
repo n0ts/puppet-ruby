@@ -87,7 +87,7 @@ The following variables may be automatically overridden with Hiera:
 "ruby::provider": "chruby"
 "ruby::user": "deploy"
 
-"ruby::build::ensure": "v20141028"
+"ruby::build::ensure": "v20151024"
 "ruby::chruby::ensure": "v0.3.6"
 "ruby::rbenv::ensure": "v0.4.0"
 
