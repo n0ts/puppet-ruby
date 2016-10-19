@@ -5,7 +5,12 @@ Puppet::Type.type(:ruby_gem).provide(:rubygems) do
   desc ""
 
   def self.ruby_versions
-    Dir["/opt/rubies/*"].map do |ruby|
+    rbenv_root = if Facter.value(:boxen_home)
+      "#{Facter.value(:boxen_home)}/rbenv"
+    else
+      "/opt/rubies"
+    end
+    Dir["#{rbenv_root}/versions/*"].map do |ruby|
       File.basename(ruby)
     end
   end
@@ -19,7 +24,12 @@ Puppet::Type.type(:ruby_gem).provide(:rubygems) do
 
     mapping = Hash.new { |h,k| h[k] = {} }
 
-    Dir["/opt/rubies/*"].each do |ruby|
+    rbenv_root = if Facter.value(:boxen_home)
+      "#{Facter.value(:boxen_home)}/rbenv"
+    else
+      "/opt/rubies"
+    end
+    Dir["#{rbenv_root}/versions/*"].each do |ruby|
       v = File.basename(ruby)
       mapping[v] = Array.new
 
@@ -136,7 +146,7 @@ private
   end
 
   def gem(command, ruby_version)
-    bindir = "/opt/rubies/#{ruby_version}/bin"
+    bindir = "#{rbenv_root}/versions/#{ruby_version}/bin"
     execute "#{bindir}/gem #{command} --verbose", {
       :combine            => true,
       :failonfail         => true,
@@ -187,5 +197,13 @@ private
     [bindir,
      "#{Facter.value(:boxen_home)}/bin",
      "/usr/bin", "/bin", "/usr/sbin", "/sbin"].join(':')
+  end
+
+  def rbenv_root
+    if Facter.value(:boxen_home)
+      "#{Facter.value(:boxen_home)}/rbenv"
+    else
+      "/opt/rubies"
+    end
   end
 end
