@@ -1,5 +1,7 @@
+<%- if scope.lookupvar("::osfamily") != 'Darwin' -%>
 # Put ruby-build on PATH
 export PATH=<%= scope.lookupvar("::ruby::build::prefix") %>/bin:$PATH
+<%- end -%>
 
 # Allow bundler to use all the cores for parallel installation
 export BUNDLE_JOBS=<%= scope.lookupvar("::processorcount") %>
