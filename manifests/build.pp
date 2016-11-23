@@ -9,7 +9,9 @@ class ruby::build(
 
   if $::osfamily == 'Darwin' {
       require homebrew
-      package { 'ruby-build': }
+      package { 'ruby-build':
+        ensure => latest,
+      }
   } else {
     repository { $prefix:
       ensure => $ensure,
