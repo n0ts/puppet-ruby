@@ -15,34 +15,15 @@ class ruby::rbenv(
 ) {
   require ruby
 
-  if $::osfamily == 'Darwin' {
-    require homebrew
-    package { 'rbenv': }
+  require homebrew
+  package { 'rbenv': }
 
-    $require = Package['rbenv']
+  $require = Package['rbenv']
 
-    file { "${prefix}/versions":
-      ensure  => directory,
-      owner   => $user,
-      require => $require,
-    }
-  } else {
-    repository { $prefix:
-      ensure => $ensure,
-      force  => true,
-      source => 'sstephenson/rbenv',
-      user   => $user
-    }
-
-    $require = Repository[$prefix]
-
-    file { "${prefix}/versions":
-      ensure  => symlink,
-      force   => true,
-      backup  => false,
-      target  => '/opt/rubies',
-      require => $require,
-    }
+  file { "${prefix}/versions":
+    ensure  => directory,
+    owner   => $user,
+    require => $require,
   }
 
   file { $prefix:
@@ -52,13 +33,11 @@ class ruby::rbenv(
   }
 
   if !empty($plugins) and $ensure != 'absent' {
-
     file { "${prefix}/plugins":
       ensure  => directory,
       require => $require
     }
 
     create_resources('ruby::rbenv::plugin', $plugins)
-
   }
 }

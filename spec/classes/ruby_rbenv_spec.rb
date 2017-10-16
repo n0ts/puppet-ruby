@@ -42,32 +42,6 @@ describe "ruby::rbenv" do
       end
     end
 
-    context "osfamily is not Darwin" do
-      let(:facts) {
-        default_test_facts.merge(:osfamily => "Linux", :id => "root")
-      }
-
-      it do
-        should_not contain_class('homebrew')
-        should_not contain_package('rbenv')
-
-        should contain_repository('/test/boxen/rbenv').with({
-          :ensure => 'v0.4.0',
-          :force  => true,
-          :source => 'sstephenson/rbenv',
-          :user   => 'testuser',
-        })
-
-        should contain_file("/test/boxen/rbenv/versions").with({
-          :ensure  => 'symlink',
-          :force   => true,
-          :backup  => false,
-          :target  => '/opt/rubies',
-          :require => 'Repository[/test/boxen/rbenv]',
-        })
-      end
-    end
-
     context "when plugins is default or empty" do
       it do
         should_not contain_file('/test/boxen/rbenv/plugins')

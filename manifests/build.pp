@@ -7,17 +7,8 @@ class ruby::build(
 ) {
   require ruby
 
-  if $::osfamily == 'Darwin' {
-      require homebrew
-      package { 'ruby-build': }
-  } else {
-    repository { $prefix:
-      ensure => $ensure,
-      force  => true,
-      source => 'sstephenson/ruby-build',
-      user   => $user,
-    }
-  }
+  require homebrew
+  package { 'ruby-build': }
 
   ensure_resource('file', "${::ruby::prefix}/cache/rubies", {
     'ensure' => 'directory',

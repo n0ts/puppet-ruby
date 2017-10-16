@@ -38,13 +38,4 @@ describe "ruby" do
     it { should contain_class("boxen::config") }
     it { should contain_boxen__env_script("ruby") }
   end
-
-  context "osfamily is not Darwin" do
-    let(:facts) {
-      default_test_facts.merge(:osfamily => "Linux", :id => "root")
-    }
-
-    it { should_not contain_class("boxen::config") }
-    it { should_not contain_boxen__env_script("ruby") }
-  end
 end
