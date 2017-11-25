@@ -9,7 +9,6 @@ Requires the following boxen modules:
 * `autoconf` (some ruby versions)
 * `openssl` (ruby versions >= 2.0.0)
 * `gcc` (ruby versions <= 1.8.7)
-* [ripienaar/puppet-module-data](https://github.com/ripienaar/puppet-module-data)
 
 ## About
 
@@ -30,7 +29,6 @@ You can find a release list of versions for ruby-build [here](https://github.com
 * `ruby::global` does not work with chruby
 * bundler is no longer installed by default
 * rubies now live in /opt/rubies instead of /opt/boxen/rbenv/versions
-* the module-data module is now **required**
 
 ## Usage
 
@@ -115,11 +113,4 @@ The following variables may be automatically overridden with Hiera:
   "2.0.0-github": "2.0.0-github6"
 ```
 
-It is **required** that you include
-[ripienaar/puppet-module-data](https://github.com/ripienaar/puppet-module-data)
-in your boxen project, as this module now ships with many pre-defined versions
-and aliases in the `data/` directory. With this module included, those
-definitions will be automatically loaded, but can be overridden easily in your
-own hierarchy.
-
-You can also use JSON if your Hiera is configured for that.
+You can also use YAML if your Hiera is configured for that.

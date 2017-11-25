@@ -24,7 +24,8 @@ describe 'ruby::rbenv::plugin' do
   context "ensure => absent" do
     let(:params) { default_params.merge(:ensure => 'absent') }
     it do
-      should contain_repository('/test/boxen/rbenv/plugins/rbenv-vars').with_ensure('absent')
+      should contain_repository('/test/boxen/rbenv/plugins/rbenv-vars').
+        with_ensure('absent')
     end
   end
 end

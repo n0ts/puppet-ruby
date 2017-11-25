@@ -12,10 +12,11 @@ describe 'ruby::global' do
   end
 
   context 'non-system ruby' do
-    let(:params) { {:version => '2.0.0'} }
+    let(:params) { {:version => '2.4.0'} }
 
     it do
-      should contain_file('/test/boxen/rbenv/version').that_requires('Ruby::Version[2.0.0]')
+      should contain_file('/test/boxen/rbenv/version').
+        with_require("Ruby::Version[#{params[:version]}]")
     end
   end
 end

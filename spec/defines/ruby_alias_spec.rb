@@ -5,11 +5,13 @@ describe 'ruby::alias' do
 
   let(:title) { '2.0.0-github' }
 
-  let(:default_params) { {
-    :to => '2.0.0-github1',
-    :ensure => 'installed'
-  } }
-  
+  let(:default_params) do
+    {
+      :to => '2.0.0-github1',
+      :ensure => 'installed'
+    }
+  end
+
   let(:params) { default_params }
 
   it do
@@ -20,8 +22,8 @@ describe 'ruby::alias' do
       :target => '/opt/rubies/2.0.0-github1'
     }).that_requires('Ruby::Version[2.0.0-github1]')
   end
-  
-  context "ensure => absent" do
+
+  context 'ensure => absent' do
     let(:params) { default_params.merge(:ensure => 'absent') }
     it do
       should_not contain_ruby('2.0.0-github1')
