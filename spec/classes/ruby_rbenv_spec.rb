@@ -54,8 +54,8 @@ describe 'ruby::rbenv' do
         should contain_repository('/test/boxen/rbenv').with({
           :ensure => default_params[:ensure],
           :force  => true,
-          :source => 'sstephenson/rbenv',
-          :user   => 'testuser',
+          :source => 'rbenv/rbenv',
+          :user   => 'testuser'
         })
 
         should contain_file('/test/boxen/rbenv/versions').with({

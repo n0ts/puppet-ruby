@@ -31,16 +31,26 @@ Puppet::Type.type(:ruby).provide(:rubybuild) do
 
   def query
     if self.class.rubylist.member?(version)
-      { :ensure => :present, :name => version, :version => version}
+      { :ensure => :present, :name => version, :version => version }
     else
-      { :ensure => :absent,  :name => version, :version => version}
+      { :ensure => :absent,  :name => version, :version => version }
     end
   end
 
   def create
-    build_ruby
+    destroy if File.directory?(prefix)
+
+    if Facter.value(:offline) == "true"
+      if File.exist?("#{cache_path}/ruby-#{version}.tar.gz")
+        build_ruby
+      else
+        raise Puppet::Error, "Can't install ruby because we're offline and the tarball isn't cached"
+      end
+    else
+      build_ruby
+    end
   rescue => e
-    raise Puppet::Error, "install failed with a crazy error: #{e.message} #{e.backtrace}"
+    raise Puppet::Error, "install failed with an error: #{e.message} #{e.backtrace}"
   end
 
   def destroy
@@ -48,8 +58,35 @@ Puppet::Type.type(:ruby).provide(:rubybuild) do
   end
 
 private
+
   def build_ruby
-    execute "rbenv install #{version}", command_options.merge(:failonfail => true)
+    execute "#{ruby_build} #{version} #{prefix}", command_options.merge(:failonfail => true)
+  end
+
+  def tmp
+    "/tmp/ruby-#{version}.tar.bz2"
+  end
+
+  # Keep in sync with same-named function in:
+  # https://github.com/boxen/our-boxen/blob/master/script/sync
+  def s3_cellar
+    homebrew_cellar = "#{Facter.value(:homebrew_root)}/Cellar"
+    case homebrew_cellar
+    when "/Cellar", "/opt/boxen/homebrew/Cellar" then ""
+    when "/usr/local/Cellar" then "default/"
+    else "#{Base64.strict_encode64(homebrew_cellar)}/"
+    end
+  end
+
+  def os_release
+    case Facter.value(:operatingsystem)
+    when "Darwin"
+      Facter.value(:macosx_productversion_major)
+    when "Debian", "Ubuntu"
+      Facter.value(:lsbdistcodename)
+    else
+      Facter.value(:operatingsystem)
+    end
   end
 
   def ruby_build
@@ -70,10 +107,15 @@ private
 
     @environment = Hash.new
 
-    @environment["HOME"] = rbenv_root
+    @environment["HOME"] = prefix
     @environment["BUNDLE_BIN_PATH"] = ""
     @environment["RUBY_BUILD_CACHE_PATH"] = cache_path
-    @environment["RBENV_ROOT"] = rbenv_root
+    @environment["GEM_HOME"] = nil
+    @environment["GEM_PATH"] = nil
+    @environment["BUNDLE_GEMFILE"] = nil
+    @environment["BUNDLE_BIN_PATH"] = nil
+    @environment["RUBYOPT"] = nil
+    @environment["RUBYLIB"] = nil
 
     @environment.merge!(@resource[:environment])
   end
@@ -90,7 +132,7 @@ private
     @resource[:version]
   end
 
-  def rbenv_root
+  def prefix
     if Facter.value(:boxen_home)
       "#{Facter.value(:boxen_home)}/rbenv"
     else

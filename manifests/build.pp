@@ -1,5 +1,5 @@
 # (Internal) Installs ruby-build
-
+#
 class ruby::build(
   $ensure = $ruby::build::ensure,
   $prefix = $ruby::build::prefix,
@@ -16,7 +16,7 @@ class ruby::build(
     repository { $prefix:
       ensure => $ensure,
       force  => true,
-      source => 'sstephenson/ruby-build',
+      source => 'rbenv/ruby-build',
       user   => $user,
     }
   }

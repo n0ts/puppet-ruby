@@ -6,12 +6,12 @@
 #
 # Normally internal use only; will be automatically included by the `ruby` class
 # if `ruby::provider` is set to "rbenv"
-
+#
 class ruby::rbenv(
   $ensure  = $ruby::rbenv::ensure,
   $prefix  = $ruby::rbenv::prefix,
   $user    = $ruby::rbenv::user,
-  $plugins = {}
+  $plugins = {},
 ) {
   require ruby
 
@@ -30,7 +30,7 @@ class ruby::rbenv(
     repository { $prefix:
       ensure => $ensure,
       force  => true,
-      source => 'sstephenson/rbenv',
+      source => 'rbenv/rbenv',
       user   => $user
     }
 
@@ -59,6 +59,5 @@ class ruby::rbenv(
     }
 
     create_resources('ruby::rbenv::plugin', $plugins)
-
   }
 }
