@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'ruby::version' do
   let(:facts) { default_test_facts }
-  let(:title) { '2.4.0' }
+  let(:title) { '2.4.2' }
 
   context 'ensure => present' do
     context 'default params' do
@@ -11,7 +11,7 @@ describe 'ruby::version' do
 
         should contain_ruby(title).with({
           :ensure     => 'installed',
-          :ruby_build => '/bin/ruby-build',
+          :ruby_build => '/opt/ruby-build/bin/ruby-build',
           :provider   => 'rubybuild',
           :user       => 'testuser',
         })
@@ -22,7 +22,6 @@ describe 'ruby::version' do
       it do
         should contain_ruby(title).with_environment({
           'CC' => '/usr/bin/cc',
-          'FROM_HIERA' => 'true',
         })
       end
     end
@@ -37,7 +36,6 @@ describe 'ruby::version' do
       it do
         should contain_ruby(title).with_environment({
           'CC' => '/usr/bin/cc',
-          'FROM_HIERA' => 'true',
           'SOME_VAR' => 'flocka'
         })
       end
