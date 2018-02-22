@@ -7,4 +7,4 @@ hierarchy:
   - name: "OS family"
     path: "%{::osfamily}.yaml"
   - name: "common"
-    pth: "common.yaml"
+    path: "common.yaml"

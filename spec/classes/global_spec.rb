@@ -7,7 +7,7 @@ describe 'ruby::global' do
     let(:params) { {:version => 'system'} }
 
     it do
-      should contain_file('/test/boxen/rbenv/version')
+      should contain_file('/opt/rbenv/version')
     end
   end
 
@@ -15,7 +15,7 @@ describe 'ruby::global' do
     let(:params) { {:version => '2.4.0'} }
 
     it do
-      should contain_file('/test/boxen/rbenv/version').
+      should contain_file('/opt/rbenv/version').
         with_require("Ruby::Version[#{params[:version]}]")
     end
   end

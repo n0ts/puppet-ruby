@@ -3,7 +3,7 @@
 # Usage:
 #
 #     ruby::alias { '1.9.3': to => '2.0.0-p648' }
-
+#
 define ruby::alias(
   $ensure  = 'installed',
   $to      = undef,

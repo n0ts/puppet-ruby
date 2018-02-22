@@ -3,8 +3,8 @@
 #
 # Usage:
 #
-#     ruby::version { '2.2.0': }
-
+#     ruby::version { '2.4.2': }
+#
 define ruby::version(
   $ensure  = 'installed',
   $env     = {},
@@ -13,7 +13,7 @@ define ruby::version(
   require ruby
   require ruby::build
 
-  $alias_hash = hiera_hash('ruby::version::alias', {})
+  $alias_hash = lookup('ruby::version::alias', Hash, 'deep', {})
 
   if has_key($alias_hash, $version) {
     $to = $alias_hash[$version]
@@ -39,7 +39,7 @@ define ruby::version(
       Package['readline'] -> Ruby <| |>
     }
 
-    $hierdata = hiera_hash('ruby::version::env', {})
+    $hierdata = lookup('ruby::version::env', Hash, 'deep', {})
 
     if has_key($hierdata, $::operatingsystem) {
       $os_env = $hierdata[$::operatingsystem]

@@ -4,7 +4,7 @@
 #   ruby::source { 'my_local_mirror':
 #     source => 'https://mymirror.com'
 #   }
-
+#
 define ruby::source($source, $ensure = 'present') {
   if $ensure == 'present' {
     exec { "gem sources --add ${source}":

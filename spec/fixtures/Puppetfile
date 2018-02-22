@@ -1,8 +1,7 @@
-# FIXME upgrade?
-mod 'autoconf',   '1.0.0',   :github_tarball => 'boxen/puppet-autoconf'
+#mod 'autoconf',   '1.0.0',   :github_tarball => 'boxen/puppet-autoconf'
 mod 'boxen',      '3.13.0c', :github_tarball => 'n0ts/puppet-boxen'
 mod 'homebrew',   '2.1.0g',  :github_tarball => 'n0ts/puppet-homebrew'
 mod 'java',       '1.8.4e',  :github_tarball => 'n0ts/puppet-java'
 mod 'openssl',    '1.0.0a',  :github_tarball => 'n0ts/puppet-openssl'
-mod 'repository', '1.0.0a',  :github_tarball => 'n0ts/puppet-repository'
+mod 'repository', '2.4.1a',  :github_tarball => 'n0ts/puppet-repository'
 mod 'stdlib',     '4.17.1',  :github_tarball => 'puppetlabs/puppetlabs-stdlib'

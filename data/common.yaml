@@ -20,15 +20,17 @@ ruby::version::alias:
   2.1.6-github: 2.1.6-github1
   2.1-github: 2.1.5-github1
   2.1: 2.1.7
-  2.2: 2.2.3
+  2.2: 2.2.4
+  2.3: 2.3.3
+  2.4: 2.4.2
   jruby: jruby-1.7.6
   ree: ree-1.8.7-2012.02
 
-ruby::prefix: '/opt'
-ruby::provider: 'rbenv'
+ruby::prefix: /opt
+ruby::provider: rbenv
 ruby::user: "%{::id}"
 
-ruby::build::ensure: 'v20170914'
+ruby::build::ensure: v20170914
 ruby::build::prefix: "%{hiera('ruby::prefix')}/ruby-build"
 ruby::build::user: "%{hiera('ruby::user')}"
 

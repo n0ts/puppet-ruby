@@ -1,6 +1,4 @@
 Puppet::Type.newtype(:ruby_gem) do
-  @doc = ""
-
   ensurable do
     newvalue :present do
       provider.create
@@ -74,6 +72,10 @@ Puppet::Type.newtype(:ruby_gem) do
     end
   end
 
+  newparam(:rbenv_root) do
+    desc "The location of rbenv install"
+  end
+
   newparam(:source) do
     defaultto "https://rubygems.org/"
 
@@ -85,15 +87,18 @@ Puppet::Type.newtype(:ruby_gem) do
     end
   end
 
-  autorequire :ruby do
-    if @parameters.include?(:ruby_version) && ruby_version = @parameters[:ruby_version].to_s
-      if ruby_version == "*"
-        catalog.resources.find_all { |resource| resource.type == 'Ruby' }
-      else
-        Array.new.tap do |a|
-          a << ruby_version if catalog.resource(:ruby, ruby_version)
-        end
-      end
-    end
+  autorequire :exec do
+    "ruby-install-${self[:ruby_version]}"
   end
+  # autorequire :ruby do
+  #   if @parameters.include?(:ruby_version) && ruby_version = @parameters[:ruby_version].to_s
+  #     if ruby_version == "*"
+  #       catalog.resources.find_all { |resource| resource.type == 'Ruby' }
+  #     else
+  #       Array.new.tap do |a|
+  #         a << ruby_version if catalog.resource(:ruby, ruby_version)
+  #       end
+  #     end
+  #   end
+  # end
 end

@@ -4,31 +4,21 @@ Puppet::Type.type(:ruby_gem).provide(:rubygems) do
   include Puppet::Util::Execution
   desc ""
 
-  def self.ruby_versions
-    rbenv_root = if Facter.value(:boxen_home)
-      "#{Facter.value(:boxen_home)}/rbenv"
-    else
-      "/opt/rubies"
-    end
+  def self.ruby_versions(rbenv_root)
     Dir["#{rbenv_root}/versions/*"].map do |ruby|
       File.basename(ruby)
     end
   end
 
   def ruby_versions
-    self.class.ruby_versions
+    self.class.ruby_versions(@resource[:rbenv_root])
   end
 
-  def self.gemlist
+  def self.gemlist(rbenv_root)
     return @gemlist if defined?(@gemlist)
 
     mapping = Hash.new { |h,k| h[k] = {} }
 
-    rbenv_root = if Facter.value(:boxen_home)
-      "#{Facter.value(:boxen_home)}/rbenv"
-    else
-      "/opt/rubies"
-    end
     Dir["#{rbenv_root}/versions/*"].each do |ruby|
       v = File.basename(ruby)
       mapping[v] = Array.new
@@ -41,17 +31,14 @@ Puppet::Type.type(:ruby_gem).provide(:rubygems) do
     @gemlist = mapping
   end
 
-  def self.instances
+  def self.instances(rbenv_root)
     return @instances if defined?(@instances)
 
     all_gems = Array.new
 
-    gemlist.each do |r, gems|
-
+    gemlist(rbenv_root).each do |r, gems|
       gems.each do |g|
-
         gem_name, _, gem_version = g.rpartition("-")
-
         all_gems << new({
           :name         => "#{gem_name} for #{r}",
           :gem          => gem_name,
@@ -67,11 +54,11 @@ Puppet::Type.type(:ruby_gem).provide(:rubygems) do
   end
 
   def gemlist
-    self.class.gemlist
+    self.class.gemlist(@resource[:rbenv_root])
   end
 
   def instances
-    self.class.instances
+    self.class.instances(@resource[:rbenv_root])
   end
 
   def query
@@ -120,7 +107,8 @@ Puppet::Type.type(:ruby_gem).provide(:rubygems) do
     end
   end
 
-private
+  private
+
   # Override default `execute` to run super method in a clean
   # environment without Bundler, if Bundler is present
   def execute(*args)
@@ -147,7 +135,7 @@ private
 
   def gem(command, ruby_version)
     bindir = "#{rbenv_root}/versions/#{ruby_version}/bin"
-    execute "#{bindir}/gem #{command} --verbose", {
+    execute "#{bindir}/gem #{command}", {
       :combine            => true,
       :failonfail         => true,
       :uid                => user,
@@ -173,27 +161,31 @@ private
     Gem::Version.new(v)
   end
 
+  def rbenv_root
+    @resource[:rbenv_root]
+  end
+
   def requirement
     Gem::Requirement.new(@resource[:version])
   end
 
   def installed_for?(ruby_version)
-    installed_gems[ruby_version].any? { |g|
+    installed_gems(ruby_version).any? { |g|
       g[:gem] == @resource[:gem] \
         && requirement.satisfied_by?(version(g[:version])) \
         && g[:ruby_version] == ruby_version
     }
   end
 
-  def installed_gems
-    @installed_gems ||= Hash.new do |installed_gems, ruby_version|
-      installed_gems[ruby_version] = gemlist[ruby_version].map { |g|
-        gem_name, _, gem_version = g.rpartition("-")
-        {
-          :gem          => gem_name,
-          :version      => gem_version,
-          :ruby_version => ruby_version,
-        }
+  def installed_gems(ruby_version)
+    return {} unless gemlist.key? ruby_version
+
+    gemlist[ruby_version].map do |g|
+      gem_name, _, gem_version = g.rpartition("-")
+      {
+        :gem          => gem_name,
+        :version      => gem_version,
+        :ruby_version => ruby_version,
       }
     end
   end
@@ -202,13 +194,5 @@ private
     [bindir,
      "#{Facter.value(:boxen_home)}/bin",
      "/usr/bin", "/bin", "/usr/sbin", "/sbin"].join(':')
-  end
-
-  def rbenv_root
-    if Facter.value(:boxen_home)
-      "#{Facter.value(:boxen_home)}/rbenv"
-    else
-      "/opt/rubies"
-    end
   end
 end

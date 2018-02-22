@@ -6,12 +6,7 @@ Puppet::Type.type(:ruby).provide(:rubybuild) do
   include Puppet::Util::Execution
 
   def self.rubylist
-    rbenv_root = if Facter.value(:boxen_home)
-      "#{Facter.value(:boxen_home)}/rbenv"
-    else
-      "/opt/rubies"
-    end
-    @rubylist ||= Dir["#{rbenv_root}/versions/*"].map do |ruby|
+    @rubylist ||= Dir["#{@rbenv_root}/versions/*"].map do |ruby|
       if File.directory?(ruby) && File.executable?("#{ruby}/bin/ruby")
         File.basename(ruby)
       end
@@ -57,7 +52,7 @@ Puppet::Type.type(:ruby).provide(:rubybuild) do
     FileUtils.rm_rf prefix
   end
 
-private
+  private
 
   def build_ruby
     execute "#{ruby_build} #{version} #{prefix}", command_options.merge(:failonfail => true)
@@ -132,11 +127,11 @@ private
     @resource[:version]
   end
 
+  def rbenv_root
+    @resource[:rbenv_root]
+  end
+
   def prefix
-    if Facter.value(:boxen_home)
-      "#{Facter.value(:boxen_home)}/rbenv"
-    else
-      "/opt/rubies"
-    end
+    "#{rbenv_root}/versions/#{version}"
   end
 end

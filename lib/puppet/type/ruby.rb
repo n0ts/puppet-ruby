@@ -1,5 +1,4 @@
 Puppet::Type.newtype(:ruby) do
-
   ensurable do
     newvalue(:present) do
       provider.create
@@ -53,6 +52,10 @@ Puppet::Type.newtype(:ruby) do
     end
   end
 
+  newparam(:rbenv_root) do
+    desc "The location of rbenv install"
+  end
+
   newparam(:user) do
     defaultto Facter.value(:id)
   end
@@ -77,5 +80,4 @@ Puppet::Type.newtype(:ruby) do
   autorequire :file do
     %w(/opt/rubies)
   end
-
 end
